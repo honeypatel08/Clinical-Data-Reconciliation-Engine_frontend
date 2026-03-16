@@ -4,17 +4,16 @@ import { useState } from "react";
 
 
 export default function Login (){
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     const handleLogin = async () => {
-        if (!username || !password) return alert("Enter both fields");
+        if (!email || !password) return alert("Enter both fields");
 
         // debugging 
-        console.log(username); 
+        console.log(email); 
         console.log(password); 
 
-        
     };
 
     return(
@@ -23,16 +22,16 @@ export default function Login (){
                 <h2>Welcome to Clinical Data Reconcilliation Engine</h2>
                 <h2>Login</h2>
                 <input
-                    className='usernameInput'
+                    className='emailInput'
                     type="text"
-                    placeholder="Username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Enter Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                 />
                 <input
                     className='passwordInput'
                     type="password"
-                    placeholder="Password"
+                    placeholder="Enter Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />

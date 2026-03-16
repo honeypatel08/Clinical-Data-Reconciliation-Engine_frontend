@@ -3,14 +3,14 @@
     margin-top: 5cm;
     border-radius: 1cm;
     width: 500px;
-    height: 420px;
+    height: 500px;
     text-align: center;
     color: white;
     box-shadow: 0 8px 20px rgba(0,0,0,0.5);
     padding: 1cm;
 }
 
-.register-box h2 {
+.register-box h2  {
     color: black;
 }
 
@@ -33,6 +33,10 @@
     font-size: 16px;
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.register-box h4 {
+    color: black;
 }
 
 .register-box button:hover {
