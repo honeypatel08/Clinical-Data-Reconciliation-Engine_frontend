@@ -1,0 +1,84 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%; 
+}
+.backgroundPage {
+    background-color: rgb(255, 239, 220);
+    width: 100vw;  
+    height: 100vh; 
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.header {
+    padding: 1cm;
+    text-align: center;
+    margin-top: 3cm;
+}
+
+.border{
+    align-items: center;
+    position: relative;
+    margin-top: 4cm;
+    background-color: rgb(237, 224, 208); 
+    border-radius: 1cm;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+
+}
+
+.button-contianer{
+    display: flex;
+    flex-direction: column;  
+    align-items: center;  
+    gap: 10px; 
+}
+
+.button-contianer {
+    display: flex;
+    justify-content: space-around; 
+    align-items: center; 
+    margin-top: 100px; 
+    gap: 20px; 
+}
+
+.button-contianer button {
+    width: 450px;       
+    height: 50px;       
+    font-size: 18px;    
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+
+.button-contianer button:hover {
+    background-color: #529ef0; 
+    color: white;
+    transform: scale(1.05); 
+}
+
+
+.adminButton {
+    background-color: #91a9cf; 
+    color: white;
+    border: none;
+    margin-bottom: 1cm;
+}
+
+.loginButton {
+    background-color: #91a9cf; 
+    color: white;
+    border: none;
+    margin-bottom: 1cm;
+}
+
+.registerButton {
+    background-color:#91a9cf; 
+    color: white;
+    border: none;
+    margin-bottom: 1cm;
+}

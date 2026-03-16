@@ -1,0 +1,68 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%; 
+}
+.backgroundPage {
+    background-color: rgb(255, 239, 220);
+    width: 100vw;  
+    height: 100vh; 
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-box {
+    background-color: rgb(237, 224, 208); 
+    margin-top: 5cm;
+    border-radius: 1cm;
+    width: 550px;
+    height: 370px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    padding: 0.5cm;
+}
+.login-box h2{
+    color: black;
+}
+
+.login-box input {
+  width: 10cm;
+  padding: 12px 15px;
+  margin: 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.login-box button {
+  width: 10cm;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #91a9cf; 
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+
+}
+
+.login-box button:hover {
+  background-color: #529ef0; 
+}
+
+.login-box h3 {
+  margin-top: 15px;
+  font-weight: normal;
+  color: black;
+}
+
+.login-box h3 a {
+  color:  black
+}
+
+.login-box h3 a:hover {
+  text-decoration: underline;
+}

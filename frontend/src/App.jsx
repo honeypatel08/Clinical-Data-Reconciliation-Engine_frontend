@@ -1,15 +1,19 @@
-import React from 'react';
-import { HashRouter, Routes, Route, Link } from 'react-router-dom';
+import {Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
+import Login from './pages/Login';
+import Admin from './pages/Admin';
+import Register from './pages/Register'
 
 function App() {
   return (
-    <HashRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
 
+      <Routes>
+    
+        <Route path="*" element={<Login />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/home" element={<Home />} />
       </Routes>
-    </HashRouter>
   );
 }
 

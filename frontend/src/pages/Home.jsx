@@ -1,11 +1,11 @@
-
+import '../css/Home.css'
 
 function Home (){
 
   return (
-    <>
-      <h1> This is Nunni page</h1>
-    </>
+    <div className='backgroundPage'>
+      <h2>Welcome to Portal</h2>
+    </div>
   )
 }
 

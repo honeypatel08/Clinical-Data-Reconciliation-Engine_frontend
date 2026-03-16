@@ -1,0 +1,40 @@
+.register-box {
+    background-color: rgb(237, 224, 208);
+    margin-top: 5cm;
+    border-radius: 1cm;
+    width: 500px;
+    height: 420px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    padding: 1cm;
+}
+
+.register-box h2 {
+    color: black;
+}
+
+.register-box input {
+    width: 10cm;
+    padding: 12px 15px;
+    margin: 15px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.register-box button {
+    width: 10cm;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    background-color: #91a9cf;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.register-box button:hover {
+    background-color: #529ef0;
+}
