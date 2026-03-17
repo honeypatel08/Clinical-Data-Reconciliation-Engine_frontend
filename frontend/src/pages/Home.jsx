@@ -1,12 +1,166 @@
 import '../css/Home.css'
+import { useEffect, useState } from "react";
+
+function AdminHome ()  {
+
+  const [pending, setPending] = useState([]);
+  const [approved, setApproved] = useState([]);
+  const [rejected, setRejected] = useState([]);
+  const [selected, setSelected] = useState([]);
+  const [tab, setTab] = useState("approved");
+
+  const token = localStorage.getItem("token"); 
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    window.location.href = "/login";
+  };
+
+  useEffect(() => { 
+    fetchUsers();
+  }, []); 
+
+  const fetchUsers = async () => {
+    const res = await fetch("http://localhost:3000/api/admin/users", {
+      headers: { Authorization: `Bearer ${token}` } 
+    });
+    const data = await res.json();
+    console.log(data); 
+    setPending(data.pending);
+    setApproved(data.approved);
+    setRejected(data.rejected);
+  };
+
+  const toggleSelect = (userEmail) => { // looked by array store 
+    if (selected.includes(userEmail)) {
+      setSelected(selected.filter((semail) => semail !== userEmail));
+    } else {
+      setSelected([...selected, userEmail]);
+    }  
+  }; 
+
+  const updateStatus = async (status) => {
+    if(selected.length === 0) return alert ("Select at least one"); 
+
+     try {
+        const res = await fetch("http://localhost:3000/api/admin/update-status", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            useremail: selected,
+            status: status 
+          })
+        });
+
+        if (!res.ok) throw new Error("Failed to update status");
+
+        fetchUsers();
+        setSelected([]); 
+      } catch (err) {
+        alert("Error updating user status");
+      }
+  }
+
+  return(
+    <>
+        <div className="header">
+          <h2>Welcome to Admin page</h2>
+          <button onClick={handleLogout} className="logoutBtn">Logout</button>
+        </div>
+
+        <div className='panels'>
+          <div className='leftPanel'>
+            <h2>Pending Approvals</h2>
+            {pending.map(user => (
+              <div key={user.email} className="userRow">
+                <input type="checkbox"   checked={selected.includes(user.email)} onChange={() => toggleSelect(user.email)} />
+                <div>
+                  <strong>Provider Name:</strong> {user.providerName} <br />
+                  <strong>Provider Email:</strong> {user.email}
+                </div>
+              </div>
+            ))}
+
+          <div className="actionButtons">
+            <button onClick={() => updateStatus("approved")}>
+              Approve
+            </button>
+            <button onClick={() => updateStatus("rejected")}>
+              Reject
+            </button>
+          </div>
+        </div>
+
+        <div className='rightPanel'>
+          <div className="tabs">
+            <button onClick={() => setTab("approved")}>
+              Approved
+            </button>
+            <button onClick={() => setTab("rejected")}>
+              Rejected
+            </button>
+          </div>
+
+          <div className="list">
+            {tab === "approved" &&
+              approved.map(user => (
+                <div>
+                  <strong>Provider Name:</strong> {user.providerName} <br />
+                  <strong>Provider Email:</strong> {user.email}
+                </div>
+              ))
+            }
+            {tab === "rejected" &&
+              rejected.map(user => (
+                <div>
+                  <strong>Provider Name:</strong> {user.providerName} <br />
+                  <strong>Provider Email:</strong> {user.email}
+                </div>
+              ))
+            }
+          </div>
+        </div>
+        </div>
+    </>
+  )
+}
+
+function UserHome ()  {
+  return(
+    <>
+      <h1>Welcome to home page</h1>
+    </>
+  )
+}
+
 
 function Home (){
+  const role = localStorage.getItem("role"); 
+  if (role === 'user') {
+    return (
+      <>
+        <div className='backgroundPage'>
+             <UserHome />
+        </div>
+      </>
+    );
+    
+  }
+  else {
+    return (
+      <>
+         <div className='backgroundPage'>
+             <AdminHome />
+        </div>
+      </>
+    );
+  }
 
-  return (
-    <div className='backgroundPage'>
-      <h2>Welcome to Portal</h2>
-    </div>
-  )
+
 }
 
 export default Home;

@@ -1,8 +1,12 @@
+/* Reset and standardize */
 html, body {
     margin: 0;
     padding: 0;
-    height: 100%; 
+    height: 100%;
+    font-family: Arial, sans-serif;
 }
+
+/* Background */
 .backgroundPage {
     background-color: rgb(255, 239, 220);
     width: 100vw;  
@@ -10,4 +14,133 @@ html, body {
     display: flex; 
     flex-direction: column;
     align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Header container */
+.header {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Keep logout styling the same */
+.logoutBtn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #91a9cf;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.logoutBtn:hover {
+    background-color: #529ef0;
+    transform: scale(1.05);
+}
+
+/* Panels container */
+.leftPanel, .rightPanel {
+    background-color: rgb(237, 224, 208);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 3px 8px rgba(0,0,0,0.2);
+}
+
+.leftPanel {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.rightPanel {
+    flex: 2;
+}
+
+/* Layout of left and right panels */
+.backgroundPage > .panels {
+    display: flex;
+    width: 100%;
+    max-width: 1200px;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+/* User rows */
+.userRow {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+    gap: 10px;
+}
+
+.userRow input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+}
+
+/* Action buttons under pending */
+.actionButtons {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.actionButtons button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #91a9cf;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.actionButtons button:hover {
+    background-color: #529ef0;
+    transform: scale(1.05);
+}
+
+/* Tabs for approved/rejected */
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.tabs button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #91a9cf;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.tabs button:hover, .tabs button.active {
+    background-color: #529ef0;
+}
+
+/* List styling */
+.list > div {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+    .backgroundPage > .panels {
+        flex-direction: column;
+    }
+    .leftPanel {
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
 }

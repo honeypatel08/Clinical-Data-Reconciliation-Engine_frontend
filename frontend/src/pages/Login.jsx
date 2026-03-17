@@ -2,15 +2,43 @@ import '../css/Login.css'
 import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
 
-
 export default function Login (){
+    const navigate = useNavigate(); 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const isValidEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
 
     const handleLogin = async () => {
         if (!email || !password) return alert("Enter both fields");
 
+        if(!isValidEmail(email)) return alert("Please enter a valid email address"); 
+
         // debugging 
+        try {
+            const res = await fetch("http://localhost:3000/api/auth/log-in", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Login failed");
+
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("role", data.role);
+            console.log(localStorage.getItem("role")); 
+
+            setEmail("");
+            setPassword("");
+            navigate('/home');
+        
+        } catch (err) {
+            alert(err.message);
+        }
         console.log(email); 
         console.log(password); 
 
