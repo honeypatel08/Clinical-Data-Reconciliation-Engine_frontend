@@ -3,7 +3,7 @@
     margin-top: 5cm;
     border-radius: 1cm;
     width: 500px;
-    height: 500px;
+    height: 550px;
     text-align: center;
     color: white;
     box-shadow: 0 8px 20px rgba(0,0,0,0.5);
@@ -11,6 +11,11 @@
 }
 
 .register-box h2  {
+    color: black;
+}
+
+
+.register-box h3  {
     color: black;
 }
 

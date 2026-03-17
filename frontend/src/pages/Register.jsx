@@ -6,26 +6,53 @@ export default function Register() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setconfirmPassword] = useState(''); 
+    const [code, setCode] = useState('');
+    const [codeSent, setCodeSent] = useState(false);
+    const [emailVerified, setEmailVerified] = useState(false);
 
-    const isValidEmail = (email) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
+    const handleSendCode = async () => {
+        try {
+            const res = await fetch("http://localhost:3000/verify/emailverify/send-code", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error);
+            setCodeSent(true);
+            alert("Verification code sent, Please check your email");
+        } catch (err) {
+            alert(err.message);
+        }
+    };
+
+    const handleVerifyCode = async () => {
+        try {
+            const res = await fetch("http://localhost:3000/verify/emailverify/verify-code", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, code })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error);
+
+            setEmailVerified(true);
+            alert("Email verified!");
+        } catch (err) {
+            alert(err.message);
+        }
     };
 
     const handleRegister = async () =>{   
         if (!email || !password || !providerName || !confirmPassword) return alert("All fields are require");
-
-        if(!isValidEmail(email)){
-            return alert("Please enter a valid email address")
-        }
-        
         if(password !== confirmPassword) return alert("Passwords does not match")
+        if (!emailVerified) { return alert("Please verify your email first");}
     
         //backend call here   
-        console.log(providerName);
-        console.log(email);
-        console.log(password);
-        console.log(confirmPassword); 
+        // console.log(providerName);
+        // console.log(email);
+        // console.log(password);
+        // console.log(confirmPassword); 
 
         // Backend connect 
         try {
@@ -38,12 +65,23 @@ export default function Register() {
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "Registration failed");
             alert(data.message);
+            
             setProviderName("");
             setEmail("");
             setPassword("");
             setconfirmPassword("");
+            setCodeSent(false);
+            setEmailVerified(false);
+            setCode("");
         } catch (err) {
             alert(err.message);
+            setProviderName("");
+            setEmail("");
+            setPassword("");
+            setconfirmPassword("");
+            setCodeSent(false);
+            setEmailVerified(false);
+            setCode("");
         }
     }
 
@@ -65,6 +103,23 @@ export default function Register() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
+                {!codeSent && (
+                    <button onClick={handleSendCode}>Send Code</button>
+                )}
+
+                {codeSent && !emailVerified && (
+                    <>
+                        <input
+                            type="text"
+                            placeholder="Enter verification code"
+                            value={code}
+                            onChange={(e) => setCode(e.target.value)}
+                        />
+                        <button onClick={handleVerifyCode}>Verify Code</button>
+                    </>
+                )}
+
+                {emailVerified && <h3>Email verified! Procced with password creation </h3>}
                 <input
                     className='passwordInput'
                     type="password"
