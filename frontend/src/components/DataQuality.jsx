@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 function DataQuality() {
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     name: "", dob: "", gender: "M", medications: "", allergies: "", conditions: "", blood_pressure: "", heart_rate: "", last_updated: ""
   });
@@ -34,6 +35,8 @@ function DataQuality() {
       last_updated: form.last_updated
     };
     try {  
+      setLoading(true);
+      setResult(null); 
       const token = localStorage.getItem("token");
       const res = await fetch("http://localhost:3000/api/reconcile/medication", {
         method: "POST",
@@ -102,7 +105,13 @@ function DataQuality() {
       <button onClick={handleSubmit}>Submit</button>
 
       {/* Result display (simple for now) */}
-      {result && (
+      {loading && (
+        <div className="resultBox">
+          <p>Loading...</p>
+        </div>
+      )}
+
+      {!loading && result && (
         <div className="resultBox">
           <p><strong>Overall Score:</strong> {result.overall_score}</p>
 

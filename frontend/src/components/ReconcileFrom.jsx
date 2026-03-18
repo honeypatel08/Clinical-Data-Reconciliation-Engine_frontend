@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 
 function ReconcileForm() {
+  const [loading, setLoading] = useState(false);
   const [patientContext, setPatientContext] = useState({ age: "", conditions: [], eGFR: "" });
   const [sources, setSources] = useState([
     { system: "", medication: "", last_updated: "", last_filled: "", source_reliability: "medium" }
@@ -41,6 +42,8 @@ function ReconcileForm() {
     };
 
     try {
+      setLoading(true);
+      setResult(null); 
       const token = localStorage.getItem("token");
       const res = await fetch("http://localhost:3000/api/reconcile/medication", {
         method: "POST",
@@ -50,7 +53,11 @@ function ReconcileForm() {
         },
         body: JSON.stringify(payload)
       });
-
+      if (res.status === 429) {
+        const data = await res.json();
+        alert(data.error);
+        return;
+      }
       const data = await res.json();
       setResult({ ...data, fromCache: false });
     } catch (err) {
@@ -152,10 +159,14 @@ function ReconcileForm() {
       <br />
       <br />
       <button onClick={handleSubmit}>Submit</button>
-
-      {result && (
+      {loading && (
         <div className="resultBox">
-          {<p>Loading..</p>}
+          <p>Loading...</p>
+        </div>
+      )}
+
+      {!loading && result && (
+        <div className="resultBox">
           <p><strong>Reconciled Medication:</strong> {result.reconciled_medication}</p>
           <br />
           <p><strong>Confidence:</strong> {result.confidence_score}</p>
