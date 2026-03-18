@@ -1,7 +1,11 @@
 import { useState } from "react";
 import '../css/Register.css'; 
+import { useNavigate } from 'react-router-dom';
+
 
 export default function Register() {
+    const navigate = useNavigate(); 
+
     const [providerName, setProviderName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -47,12 +51,6 @@ export default function Register() {
         if (!email || !password || !providerName || !confirmPassword) return alert("All fields are require");
         if(password !== confirmPassword) return alert("Passwords does not match")
         if (!emailVerified) { return alert("Please verify your email first");}
-    
-        //backend call here   
-        // console.log(providerName);
-        // console.log(email);
-        // console.log(password);
-        // console.log(confirmPassword); 
 
         // Backend connect 
         try {
@@ -83,6 +81,7 @@ export default function Register() {
             setEmailVerified(false);
             setCode("");
         }
+        navigate('./login')
     }
 
     return(
