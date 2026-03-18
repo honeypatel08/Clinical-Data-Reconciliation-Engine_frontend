@@ -16,14 +16,15 @@ html, body {
     background-color: rgb(237, 224, 208); 
     margin-top: 5cm;
     border-radius: 1cm;
-    width: 550px;
-    height: 370px;
+    width: 600px;
+    height: 400px;
     text-align: center;
     color: white;
     box-shadow: 0 8px 20px rgba(0,0,0,0.5);
     padding: 0.5cm;
 }
 .login-box h2{
+    margin-top: 0.5cm;
     color: black;
 }
 

@@ -1,18 +1,34 @@
 import React, { useState } from "react";
+import '../css/Home.css'
 
 function DataQuality() {
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({
-    name: "", dob: "", gender: "M", medications: "", allergies: "", conditions: "", blood_pressure: "", heart_rate: "", last_updated: ""
-  });
+  const initialForm = [
+    {  name: "",
+    dob: "",
+    gender: "M",
+    medications: "",
+    allergies: "",
+    conditions: "",
+    blood_pressure: "",
+    heart_rate: "",
+    last_updated: "" }
+  ];
+
+  const [form, setForm] = useState(initialForm);
   const [result, setResult] = useState(null);
+
   const handleChange = (field, value) => {
-    setForm({ ...form, [field]: value });
+    setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  // Submit handler
+  const getColor = (score) => {
+    if (score >= 80) return "green";
+    if (score >= 50) return "orange";
+    return "red";
+  };
+
   const handleSubmit = async () => {
-    // convert to  JSON  first
     const payload = {
       demographics: {
         name: form.name,
@@ -20,42 +36,97 @@ function DataQuality() {
         gender: form.gender
       },
       medications: form.medications
-        ? form.medications.split(",").map(m => m.trim())
+        ? form.medications.split(",").map((m) => m.trim())
         : [],
       allergies: form.allergies
-        ? form.allergies.split(",").map(a => a.trim())
+        ? form.allergies.split(",").map((a) => a.trim())
         : [],
       conditions: form.conditions
-        ? form.conditions.split(",").map(c => c.trim())
+        ? form.conditions.split(",").map((c) => c.trim())
         : [],
       vital_signs: {
         blood_pressure: form.blood_pressure,
-        heart_rate: Number(form.heart_rate)
+        heart_rate: form.heart_rate ? Number(form.heart_rate) : null
       },
       last_updated: form.last_updated
     };
-    try {  
+
+    try {
       setLoading(true);
-      setResult(null); 
+      setResult(null);
+
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:3000/api/reconcile/medication", {
+
+      const res = await fetch(
+        "http://localhost:3000/api/validate/data-quality",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        }
+      );
+
+      if (!res.ok) throw new Error("API error");
+
+      const data = await res.json();
+      console.log("API RESPONSE:", data);
+
+      setResult(data);
+    } catch (err) {
+      console.error(err);
+      alert("Error calling API");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetForm = () => {
+    setForm(initialForm); 
+    setResult(null);
+  };
+  const handleApprove = async (res) => {
+    try {
+        const token = localStorage.getItem("token");
+        const response = await fetch("http://localhost:3000/user/approves/validate", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json();
-      setResult({ ...data });
+        body: JSON.stringify({
+            overall_score: res.overall_score,
+            breakdown: res.breakdown,
+            issues: res.issues_detected
+        })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            alert("Approved and saved to your History!");
+            setResult({ ...res, status: 'approved' });
+            resetForm(); 
+        } else {
+            alert("Approval failed: " + data.message);
+        }
     } catch (err) {
-      alert("Error calling reconcile API");
+        console.error(err);
+        alert("Failed");
     }
+    setResult(null);
+
+  };
+
+  const handleReject = async () => {
+    setResult(null);
+    resetForm(); 
   };
 
   return (
     <div className="formContainer">
-      <h3> Input Infomation To Get Data-Quality</h3>
+      <h3>Input Information To Get Data-Quality</h3>
 
       <h4>Demographics: </h4>
       <div className="formSection">
@@ -79,10 +150,10 @@ function DataQuality() {
       <div className="formSection">
         <label>Medications (comma-separated):</label>
         <input type="text" value={form.medications} onChange={(e) => handleChange("medications", e.target.value)}/>
-        <br />
+        <br /><br />
         <label>Allergies (comma-separated):</label>
         <input type="text" value={form.allergies} onChange={(e) => handleChange("allergies", e.target.value)} />
-        <br />
+        <br /><br />
         <label>Conditions (comma-separated):</label>
         <input type="text" value={form.conditions} onChange={(e) => handleChange("conditions", e.target.value)} />
       </div>
@@ -91,7 +162,7 @@ function DataQuality() {
       <div className="formSection">
         <label>Blood Pressure (e.g., 120/80):</label>
         <input type="text" value={form.blood_pressure} onChange={(e) => handleChange("blood_pressure", e.target.value)}/>
-        <br />
+        <br /><br />
         <label>Heart Rate:</label>
         <input type="number" value={form.heart_rate} onChange={(e) => handleChange("heart_rate", e.target.value)} />
       </div>
@@ -102,37 +173,46 @@ function DataQuality() {
         <input type="date" value={form.last_updated}  onChange={(e) => handleChange("last_updated", e.target.value)} />
       </div>
       <br />
+
       <button onClick={handleSubmit}>Submit</button>
-
-      {/* Result display (simple for now) */}
-      {loading && (
-        <div className="resultBox">
-          <p>Loading...</p>
-        </div>
-      )}
-
+      {loading && <p>Loading...</p>}
       {!loading && result && (
         <div className="resultBox">
-          <p><strong>Overall Score:</strong> {result.overall_score}</p>
+          <p>
+            <strong>Overall Score:</strong>{" "}
+            <span style={{ color: getColor(result.overall_score) }}>
+              {result.overall_score}
+            </span>
+          </p>
 
           <p><strong>Breakdown:</strong></p>
           <ul>
             {Object.entries(result.breakdown || {}).map(([k, v]) => (
-              <li key={k}>{k}: {v}</li>
+              <li key={k}>
+                {k}:{" "}
+                <span style={{ color: getColor(v), fontWeight: "bold" }}>
+                  {v}
+                </span>
+              </li>
             ))}
           </ul>
 
           <p><strong>Issues Detected:</strong></p>
           <ul>
-            {result.issues_detected?.map((issue, idx) => (
+            {(result.issues_detected || []).map((issue, idx) => (
               <li key={idx}>
-                {issue.field} - {issue.issue} ({issue.severity})
+                <span style={{ color: issue.severity === "high" ? "red" : "orange" }}>
+                  {issue.field} - {issue.issue} ({issue.severity})
+                </span>
               </li>
             ))}
           </ul>
+          <div className="approvalButtons">
+            <button onClick={() => handleApprove(result)}>Approve</button>
+            <button onClick={() => handleReject()}>Reject</button>
+        </div>
         </div>
       )}
-
     </div>
   );
 }

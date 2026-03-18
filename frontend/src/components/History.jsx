@@ -3,6 +3,7 @@ import '../css/Home.css';
 
 export default function History() {
   const [approved, setApproved] = useState([]);
+  const [dataQuality, setDataQuality] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -41,20 +42,20 @@ export default function History() {
       setLoading(false);
     }
   };
-
+  
   return (
     <div className="backgroundPage">
       <h2>Approved History</h2>
-      <ul>
+      <ul className="historyList">
         {approved.map((user, index) => (
           <li key={index}>
             <ul>
-              <li><strong>Medication:</strong> {user.reconciled_medication}</li>
-              <li><strong>Confidence:</strong> {user.confidence_score}</li>
-              <li><strong>Reasoning:</strong> {user.reasoning}</li>
-              <li><strong>Recommended Actions:</strong> {user.recommended_actions}</li>
-              <li><strong>Clinical Safety Check:</strong> {user.clinical_safety_check}</li>
-              <li><strong>Date:</strong> {user.created_at}</li>
+              <strong>Medication:</strong> {user.reconciled_medication}
+              <strong>Confidence:</strong> {user.confidence_score}
+              <strong>Reasoning:</strong> {user.reasoning}
+              <strong>Recommended Actions:</strong> {user.recommended_actions}
+              <strong>Clinical Safety Check:</strong> {user.clinical_safety_check}
+              <strong>Date:</strong> {user.created_at}
             </ul>
           </li>
         ))}

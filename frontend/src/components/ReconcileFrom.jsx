@@ -1,13 +1,22 @@
 import React, { useState } from "react";
+import '../css/Home.css'
 
-
-function ReconcileForm() {
+function ReconcileFrom() {
   const [loading, setLoading] = useState(false);
-  const [patientContext, setPatientContext] = useState({ age: "", conditions: [], eGFR: "" });
-  const [sources, setSources] = useState([
+   const initialPatientContext = {
+    age: "",
+    conditions: [],
+    eGFR: ""
+  };
+
+  const initialSources = [
     { system: "", medication: "", last_updated: "", last_filled: "", source_reliability: "medium" }
-  ]);
+  ];
+
+  const [patientContext, setPatientContext] = useState(initialPatientContext);
+  const [sources, setSources] = useState(initialSources);
   const [result, setResult] = useState(null);
+
 
   // Source helpers
   const updateSource = (idx, field, value) => {
@@ -24,8 +33,8 @@ function ReconcileForm() {
     setSources(sources.filter((_, i) => i !== idx));
   };
 
+  //// convert to  JSON  first and call backend end point
   const handleSubmit = async () => {
-    // convert to  JSON  first
     const payload = {
       patient_context: {
         age: Number(patientContext.age),
@@ -56,13 +65,23 @@ function ReconcileForm() {
       if (res.status === 429) {
         const data = await res.json();
         alert(data.error);
+        setLoading(false);
         return;
       }
       const data = await res.json();
       setResult({ ...data, fromCache: false });
     } catch (err) {
+      setResult("Failed")
       alert("Error calling reconcile API");
+    }finally{
+      setLoading(false)
     }
+  };
+
+  const resetForm = () => {
+    setPatientContext(initialPatientContext);
+    setSources(initialSources);
+    setResult(null);
   };
 
   const handleApprove = async (res) => {
@@ -82,22 +101,25 @@ function ReconcileForm() {
             clinical_safety_check: res.clinical_safety_check
         })
         });
-
         const data = await response.json();
         if (data.success) {
             alert("Approved and saved to your History!");
+            resetForm();
             setResult({ ...res, status: 'approved' });
         } else {
             alert("Approval failed: " + data.message);
         }
-    } catch (err) {
-        console.error(err);
-        alert("Failed");
-    }
+      } catch (err) {
+          console.error(err);
+          alert("Failed");
+      }
+      setResult(null);
+
     };
 
     const handleReject = async () => {
-        setResult(null);
+      setResult(null);
+      resetForm();
     };
 
   return (
@@ -189,4 +211,4 @@ function ReconcileForm() {
   );
 }
 
-export default ReconcileForm;
+export default ReconcileFrom;

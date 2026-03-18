@@ -1,6 +1,6 @@
 import '../css/Home.css'
 import { useEffect, useState } from "react";
-import ReconcileForm from '../components/ReconcileFrom';
+import ReconcileFrom from '../components/ReconcileFrom';
 import DataQuality from '../components/DataQuality';
 import History from '../components/History';
 
@@ -151,14 +151,14 @@ function UserHome ()  {
       <div className="tabs">
         <button onClick={() => setActiveTab("reconcile")}>Reconcile Medication</button>
         <button onClick={() => setActiveTab("dataQuality")}>Validate Data Quality</button>
-        <button onClick={() => setActiveTab("history")}>Approved History</button>
+        <button onClick={() => setActiveTab("history")}>Reconcile Approved History</button>
       </div>
 
       <div className="tabContent">
-        {activeTab === "reconcile" && <ReconcileForm />}
+        {activeTab === "reconcile" && <ReconcileFrom />}
         {activeTab === "dataQuality" && <DataQuality />}
-        {activeTab === "history" && <History />}
       </div>
+      {activeTab === "history" && <History />}
     </>
   )
 }
