@@ -164,37 +164,46 @@ function UserHome ()  {
 }
 
 function Home (){
-
   const token = localStorage.getItem('token'); 
+  const [role, setRole] = useState(null);
 
-  const role = localStorage.getItem("role"); 
-  if (role === 'user') {
+  const getUserFromToken = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/user-role", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setRole(data.role);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    if (token) {
+      getUserFromToken();
+    }
+  }, [token]);
+
+  if (role === 'admin') {
     return (
       <>
         <div className='backgroundPage'>
+          <AdminHome />
+        </div>
+      </>
+    );
+  }
+  else if(role == 'user'){
+    return (
+      <>
+         <div className='backgroundPage'>
              <UserHome />
         </div>
       </>
     );
-    
   }
-  else {
-    return (
-      <>
-         <div className='backgroundPage'>
-             <AdminHome />
-        </div>
-      </>
-    );
-  }
-
-  // return(
-  //  <div className='backgroundPage'>
-  //     <UserHome />
-  //   </div>
-  // )
-
-
 }
 
 export default Home;
