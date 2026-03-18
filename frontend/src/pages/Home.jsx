@@ -1,5 +1,8 @@
 import '../css/Home.css'
 import { useEffect, useState } from "react";
+import ReconcileForm from '../components/ReconcileFrom';
+import DataQuality from '../components/DataQuality';
+import History from '../components/History';
 
 function AdminHome ()  {
 
@@ -130,15 +133,40 @@ function AdminHome ()  {
 }
 
 function UserHome ()  {
+
+  const [activeTab, setActiveTab] = useState("reconcile");
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    window.location.href = "/login";
+  };
+
   return(
     <>
-      <h1>Welcome to home page</h1>
+      <div className="header">
+        <h2>Welcome to Home Page</h2>
+        <button onClick={handleLogout} className="logoutBtn">Logout</button>
+      </div>
+
+      <div className="tabs">
+        <button onClick={() => setActiveTab("reconcile")}>Reconcile Medication</button>
+        <button onClick={() => setActiveTab("dataQuality")}>Validate Data Quality</button>
+        <button onClick={() => setActiveTab("history")}>Approved History</button>
+      </div>
+
+      <div className="tabContent">
+        {activeTab === "reconcile" && <ReconcileForm />}
+        {activeTab === "dataQuality" && <DataQuality />}
+        {activeTab === "history" && <History />}
+      </div>
     </>
   )
 }
 
-
 function Home (){
+
+  const token = localStorage.getItem('token'); 
+
   const role = localStorage.getItem("role"); 
   if (role === 'user') {
     return (
@@ -159,6 +187,12 @@ function Home (){
       </>
     );
   }
+
+  // return(
+  //  <div className='backgroundPage'>
+  //     <UserHome />
+  //   </div>
+  // )
 
 
 }
