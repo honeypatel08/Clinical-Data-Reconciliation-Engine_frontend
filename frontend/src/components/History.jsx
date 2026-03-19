@@ -19,7 +19,7 @@ export default function History() {
     }
 
     try {
-      const res = await fetch("http://localhost:3000/user/approves/history", {
+      const res = await fetch("https://clinical-data-reconciliation-engine-backend-production.up.railway.app/user/approves/history", {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) {

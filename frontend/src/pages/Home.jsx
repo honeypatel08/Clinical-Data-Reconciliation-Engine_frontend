@@ -25,7 +25,7 @@ function AdminHome ()  {
   }, []); 
 
   const fetchUsers = async () => {
-    const res = await fetch("http://localhost:3000/api/admin/users", {
+    const res = await fetch("https://clinical-data-reconciliation-engine-backend-production.up.railway.app/api/admin/users", {
       headers: { Authorization: `Bearer ${token}` } 
     });
     const data = await res.json();
@@ -47,7 +47,7 @@ function AdminHome ()  {
     if(selected.length === 0) return alert ("Select at least one"); 
 
      try {
-        const res = await fetch("http://localhost:3000/api/admin/update-status", {
+        const res = await fetch("https://clinical-data-reconciliation-engine-backend-production.up.railway.app/api/admin/update-status", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -169,7 +169,7 @@ function Home (){
 
   const getUserFromToken = async () => {
     try {
-      const res = await fetch("http://localhost:3000/user-role", {
+      const res = await fetch("https://clinical-data-reconciliation-engine-backend-production.up.railway.app/user-role", {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });

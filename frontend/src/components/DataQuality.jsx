@@ -58,7 +58,7 @@ function DataQuality() {
       const token = localStorage.getItem("token");
 
       const res = await fetch(
-        "http://localhost:3000/api/validate/data-quality",
+        "https://clinical-data-reconciliation-engine-backend-production.up.railway.app/api/validate/data-quality",
         {
           method: "POST",
           headers: {
@@ -90,7 +90,7 @@ function DataQuality() {
   const handleApprove = async (res) => {
     try {
         const token = localStorage.getItem("token");
-        const response = await fetch("http://localhost:3000/user/approves/validate", {
+        const response = await fetch("https://clinical-data-reconciliation-engine-backend-production.up.railway.app/user/approves/validate", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
