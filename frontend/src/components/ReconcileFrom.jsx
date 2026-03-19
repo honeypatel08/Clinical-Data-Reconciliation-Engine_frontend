@@ -204,7 +204,7 @@ function ReconcileFrom() {
           <div className="approvalButtons">
             <button onClick={() => handleApprove(result)}>Approve</button>
             <button onClick={() => handleReject()}>Reject</button>
-        </div>
+          </div>
         </div>
       )}
     </div>

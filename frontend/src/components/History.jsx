@@ -9,8 +9,13 @@ export default function History() {
 
   const token = localStorage.getItem("token");
   useEffect(() => {
-    fetchUsers();
-  }, []);
+      if (token) {
+        fetchUsers();
+        fetchDataQuality();
+      } else {
+        setLoading(false);
+      }
+    }, []);
 
   const fetchUsers = async () => {
     if (!token) {
@@ -42,6 +47,24 @@ export default function History() {
       setLoading(false);
     }
   };
+
+  const fetchDataQuality = async () => {
+    try {
+      const res = await fetch("https://clinical-data-reconciliation-engine-backend-production.up.railway.app/user/approves/data-quality/history", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const data = await res.json();
+
+      if (data.approved && Array.isArray(data.approved)) {
+        setDataQuality(data.approved);
+      } else {
+        setDataQuality([]);
+      }
+    } catch (err) {
+      console.error("Error fetching data quality:", err);
+    }
+  };
   
   return (
     <div className="backgroundPage">
@@ -61,6 +84,39 @@ export default function History() {
         ))}
       </ul>
       {approved.length === 0 && !loading && !error && <p>No approved history found.</p>}
+      <h2>Data Quality History</h2>
+      <ul className="historyList">
+        {dataQuality.map((item, index) => (
+          <li key={index}>
+            <ul>
+              <strong>Overall Score:</strong> {item.overall_score}
+              <br />
+              <strong>Breakdown:</strong>
+              <ul>
+                <li>Completeness: {item.breakdown?.completeness}</li>
+                <li>Accuracy: {item.breakdown?.accuracy}</li>
+                <li>Timeliness: {item.breakdown?.timeliness}</li>
+                <li>Clinical Plausibility: {item.breakdown?.clinical_plausibility}</li>
+              </ul>
+              <strong>Issues Detected:</strong>
+              <ul>
+                {item.issues_detected?.map((issue, i) => (
+                  <li key={i}>
+                    <div><strong>Field:</strong> {issue.field}</div>
+                    <div><strong>Issue:</strong> {issue.issue}</div>
+                    <div><strong>Severity:</strong> {issue.severity}</div>
+                  </li>
+                ))}
+              </ul>
+              <strong>Date:</strong> {item.created_at}
+            </ul>
+          </li>
+        ))}
+      </ul>
+
+      {dataQuality.length === 0 && !loading && !error && (
+        <p>No data quality history found.</p>
+      )}
     </div>
   );
 }

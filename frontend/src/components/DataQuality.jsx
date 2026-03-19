@@ -87,41 +87,40 @@ function DataQuality() {
     setForm(initialForm); 
     setResult(null);
   };
+
   const handleApprove = async (res) => {
     try {
         const token = localStorage.getItem("token");
-        const response = await fetch("https://clinical-data-reconciliation-engine-backend-production.up.railway.app/user/approves/validate", {
+        const response = await fetch("https://clinical-data-reconciliation-engine-backend-production.up.railway.app/user/approves/data-quality", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
-            overall_score: res.overall_score,
-            breakdown: res.breakdown,
-            issues: res.issues_detected
+          overall_score: res.overall_score,
+          breakdown: res.breakdown || {},
+          issues_detected: res.issues_detected || []
         })
         });
-
         const data = await response.json();
-        if (data.success) {
-            alert("Approved and saved to your History!");
-            setResult({ ...res, status: 'approved' });
-            resetForm(); 
-        } else {
-            alert("Approval failed: " + data.message);
-        }
-    } catch (err) {
-        console.error(err);
-        alert("Failed");
-    }
-    setResult(null);
-
-  };
+          if (data.success) {
+                alert("Approved and saved to your History!");
+                resetForm();
+                setResult({ ...res, status: 'approved' });
+            } else {
+                alert("Approval failed: " + data.message);
+            }
+          } catch (err) {
+              console.error(err);
+              alert("Failed");
+          }
+          setResult(null);
+        };
 
   const handleReject = async () => {
     setResult(null);
-    resetForm(); 
+    resetForm();
   };
 
   return (
@@ -210,6 +209,10 @@ function DataQuality() {
           
         </div>
       )}
+      <div className="approvalButtons">
+            <button onClick={() => handleApprove(result)}>Approve</button>
+            <button onClick={() => handleReject()}>Reject</button>
+      </div>
     </div>
   );
 }
