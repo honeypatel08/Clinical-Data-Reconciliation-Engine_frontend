@@ -29,6 +29,7 @@ function DataQuality() {
   };
 
   const handleSubmit = async () => {
+    if (!validateDataQuality()) return;
     const payload = {
       demographics: {
         name: form.name,
@@ -116,11 +117,17 @@ function DataQuality() {
               alert("Failed");
           }
           setResult(null);
-        };
+  };
 
   const handleReject = async () => {
     setResult(null);
     resetForm();
+  };
+
+  const validateDataQuality = () => {
+    if (!form.name) { alert("Name is required"); return false; }
+    if (!form.dob) { alert("DOB is required"); return false; }
+    return true;
   };
 
   return (

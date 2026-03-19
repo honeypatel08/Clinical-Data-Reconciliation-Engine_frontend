@@ -33,8 +33,41 @@ function ReconcileFrom() {
     setSources(sources.filter((_, i) => i !== idx));
   };
 
+  const validatePatientContext = () => {
+    const { age, conditions, eGFR } = patientContext;
+    if (!age) {
+      alert("Age is required");
+      return false;
+    }
+    if (!conditions.length) {
+      alert("At least one condition is required");
+      return false;
+    }
+    if (!eGFR) {
+      alert("Recent eGFR is required");
+      return false;
+    }
+    return true;
+  };
+  const validateSources = () => {
+    if (sources.length === 0) {
+      alert("At least one medication source is required");
+      return false;
+    }
+
+    for (let i = 0; i < sources.length; i++) {
+      const { system, medication } = sources[i];
+      if (!system || !medication) {
+        alert(`Source ${i + 1} must have both system and medication`);
+        return false;
+      }
+    }
+
+    return true;
+  };
   //// convert to  JSON  first and call backend end point
   const handleSubmit = async () => {
+    if (!validatePatientContext() || !validateSources()) return;
     const payload = {
       patient_context: {
         age: Number(patientContext.age),
