@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 export default function Register() {
     const navigate = useNavigate(); 
 
-    const [providerName, setProviderName] = useState('');
+    const [providername, setProviderName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setconfirmPassword] = useState(''); 
@@ -48,7 +48,7 @@ export default function Register() {
     };
 
     const handleRegister = async () =>{   
-        if (!email || !password || !providerName || !confirmPassword) return alert("All fields are require");
+        if (!email || !password || !providername || !confirmPassword) return alert("All fields are require");
         if(password !== confirmPassword) return alert("Passwords does not match")
         if (!emailVerified) { return alert("Please verify your email first");}
 
@@ -57,7 +57,7 @@ export default function Register() {
             const res = await fetch("http://localhost:3000/api/auth/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ providerName, email, password })
+            body: JSON.stringify({ providername, email, password })
             });
 
             const data = await res.json();
@@ -89,10 +89,10 @@ export default function Register() {
             <div className="register-box">
                 <h2>Healthcare Provider? Create An Account</h2>
                 <input
-                    className='providerName'
+                    className='providername'
                     type="text"
                     placeholder="Provider Name"
-                    value={providerName}
+                    value={providername}
                     onChange={(e) => setProviderName(e.target.value)}
                 />
                  <input

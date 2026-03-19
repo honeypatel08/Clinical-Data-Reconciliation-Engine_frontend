@@ -82,7 +82,7 @@ function AdminHome ()  {
               <div key={user.email} className="userRow">
                 <input type="checkbox"   checked={selected.includes(user.email)} onChange={() => toggleSelect(user.email)} />
                 <div>
-                  <strong>Provider Name:</strong> {user.providerName} <br />
+                  <strong>Provider Name:</strong> {user.providername} <br />
                   <strong>Provider Email:</strong> {user.email}
                 </div>
               </div>
@@ -112,7 +112,7 @@ function AdminHome ()  {
             {tab === "approved" &&
               approved.map(user => (
                 <div>
-                  <strong>Provider Name:</strong> {user.providerName} <br />
+                  <strong>Provider Name:</strong> {user.providername} <br />
                   <strong>Provider Email:</strong> {user.email}
                 </div>
               ))
@@ -120,7 +120,7 @@ function AdminHome ()  {
             {tab === "rejected" &&
               rejected.map(user => (
                 <div>
-                  <strong>Provider Name:</strong> {user.providerName} <br />
+                  <strong>Provider Name:</strong> {user.providername} <br />
                   <strong>Provider Email:</strong> {user.email}
                 </div>
               ))
