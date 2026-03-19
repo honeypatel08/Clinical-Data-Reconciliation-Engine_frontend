@@ -65,7 +65,7 @@ export default function Login (){
                 />
                 <button onClick={handleLogin}>Login</button>
                 <h3>
-                    Don't have an account? <a href="/register">Register</a>
+                    Don't have an account? <a href="https://honeypatel08.github.io/Clinical-Data-Reconciliation-Engine_frontend/#/register">Register</a>
                 </h3>
             </div>
         </div>

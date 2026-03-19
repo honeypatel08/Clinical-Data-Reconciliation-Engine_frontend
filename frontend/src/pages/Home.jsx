@@ -138,7 +138,7 @@ function UserHome ()  {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
-    window.location.href = "/login";
+    window.location.href = "https://honeypatel08.github.io/Clinical-Data-Reconciliation-Engine_frontend/#/login";
   };
 
   return(
