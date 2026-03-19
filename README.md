@@ -1,6 +1,6 @@
 Note: Project has been deployed. You can test the live version here: https://honeypatel08.github.io/Clinical-Data-Reconciliation-Engine_frontend/#/
 
-Setup Instructions (Local Development): 
+Local Run: 
 1. Clone repository
 2. cd frontend
 3. Install dependencies: npm install
