@@ -50,7 +50,6 @@ export default function Register() {
     const handleRegister = async () =>{   
         if (!email || !password || !providername || !confirmPassword) return alert("All fields are require");
         if(password !== confirmPassword) return alert("Passwords does not match")
-        if (!emailVerified) { return alert("Please verify your email first");}
 
         // Backend connect 
         try {
@@ -102,23 +101,7 @@ export default function Register() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
-                {!codeSent && (
-                    <button onClick={handleSendCode}>Send Code</button>
-                )}
-
-                {codeSent && !emailVerified && (
-                    <>
-                        <input
-                            type="text"
-                            placeholder="Enter verification code"
-                            value={code}
-                            onChange={(e) => setCode(e.target.value)}
-                        />
-                        <button onClick={handleVerifyCode}>Verify Code</button>
-                    </>
-                )}
-
-                {emailVerified && <h3>Email verified! Procced with password creation </h3>}
+            
                 <input
                     className='passwordInput'
                     type="password"
