@@ -19,7 +19,7 @@ export default function Login (){
 
         // debugging 
         try {
-            const res = await fetch("https://clinical-data-reconciliation-engine-backend-production.up.railway.app/api/auth/log-in", {
+            const res = await fetch("https://clinical-data-reconciliation-engine-eymc.onrender.com/api/auth/log-in", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password })

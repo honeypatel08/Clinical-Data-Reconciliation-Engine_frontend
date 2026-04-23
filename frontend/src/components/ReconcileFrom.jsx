@@ -87,7 +87,7 @@ function ReconcileFrom() {
       setLoading(true);
       setResult(null); 
       const token = localStorage.getItem("token");
-      const res = await fetch("https://clinical-data-reconciliation-engine-backend-production.up.railway.app/api/reconcile/medication", {
+      const res = await fetch("https://clinical-data-reconciliation-engine-eymc.onrender.com/api/reconcile/medication", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -120,7 +120,7 @@ function ReconcileFrom() {
   const handleApprove = async (res) => {
     try {
         const token = localStorage.getItem("token");
-        const response = await fetch("https://clinical-data-reconciliation-engine-backend-production.up.railway.app/user/approves/", {
+        const response = await fetch("https://clinical-data-reconciliation-engine-eymc.onrender.com/user/approves/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

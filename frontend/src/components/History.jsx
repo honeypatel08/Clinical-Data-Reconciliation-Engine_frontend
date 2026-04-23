@@ -24,7 +24,7 @@ export default function History() {
     }
 
     try {
-      const res = await fetch("https://clinical-data-reconciliation-engine-backend-production.up.railway.app/user/approves/history", {
+      const res = await fetch("https://clinical-data-reconciliation-engine-eymc.onrender.com/user/approves/history", {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) {
@@ -50,7 +50,7 @@ export default function History() {
 
   const fetchDataQuality = async () => {
     try {
-      const res = await fetch("https://clinical-data-reconciliation-engine-backend-production.up.railway.app/user/approves/data-quality/history", {
+      const res = await fetch("https://clinical-data-reconciliation-engine-eymc.onrender.com/user/approves/data-quality/history", {
         headers: { Authorization: `Bearer ${token}` },
       });
 

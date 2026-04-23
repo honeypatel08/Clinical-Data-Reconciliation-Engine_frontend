@@ -16,7 +16,7 @@ export default function Register() {
 
     const handleSendCode = async () => {
         try {
-            const res = await fetch("https://clinical-data-reconciliation-engine-backend-production.up.railway.app/verify/emailverify/send-code", {
+            const res = await fetch("https://clinical-data-reconciliation-engine-eymc.onrender.com/verify/emailverify/send-code", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email })
@@ -32,7 +32,7 @@ export default function Register() {
 
     const handleVerifyCode = async () => {
         try {
-            const res = await fetch("https://clinical-data-reconciliation-engine-backend-production.up.railway.app/verify/emailverify/verify-code", {
+            const res = await fetch("https://clinical-data-reconciliation-engine-eymc.onrender.com/verify/emailverify/verify-code", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, code })
@@ -54,7 +54,7 @@ export default function Register() {
 
         // Backend connect 
         try {
-            const res = await fetch("https://clinical-data-reconciliation-engine-backend-production.up.railway.app/api/auth/register", {
+            const res = await fetch("https://clinical-data-reconciliation-engine-eymc.onrender.com/api/auth/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ providername, email, password })
