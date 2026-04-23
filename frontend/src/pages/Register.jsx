@@ -30,23 +30,6 @@ export default function Register() {
         }
     };
 
-    const handleVerifyCode = async () => {
-        try {
-            const res = await fetch("https://clinical-data-reconciliation-engine-eymc.onrender.com/verify/emailverify/verify-code", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, code })
-            });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error);
-
-            setEmailVerified(true);
-            alert("Email verified!");
-        } catch (err) {
-            alert(err.message);
-        }
-    };
-
     const handleRegister = async () =>{   
         if (!email || !password || !providername || !confirmPassword) return alert("All fields are require");
         if(password !== confirmPassword) return alert("Passwords does not match")
