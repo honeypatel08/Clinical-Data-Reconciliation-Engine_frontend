@@ -28,3 +28,11 @@ Improvements:
 
 Estimate Time: 
 1. 4-5 days
+
+Note: 
+Account Require Admin Apporval 
+To test/use account use following log credentials: 
+email: testing1@gmail.com
+pass: testing1
+
+
