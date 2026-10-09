@@ -1,74 +1,63 @@
 import { useEffect, useState } from "react";
 import '../css/Home.css';
+import { API_URL } from '../config';
 
 export default function History() {
+  const token = localStorage.getItem("token");
   const [approved, setApproved] = useState([]);
   const [dataQuality, setDataQuality] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(Boolean(token));
   const [error, setError] = useState(null);
 
-  const token = localStorage.getItem("token");
   useEffect(() => {
-      if (token) {
-        fetchUsers();
-        fetchDataQuality();
-      } else {
-        setLoading(false);
-      }
-    }, []);
+    if (!token) return;
 
-  const fetchUsers = async () => {
-    if (!token) {
-      setLoading(false);
-      return;
+    let active = true;
+
+    async function loadHistory() {
+      try {
+        const [historyResponse, qualityResponse] = await Promise.all([
+          fetch(`${API_URL}/user/approves/history`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          fetch(`${API_URL}/user/approves/data-quality/history`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
+
+        if (!historyResponse.ok) {
+          const errorData = await historyResponse.json().catch(() => ({}));
+          throw new Error(errorData.message || "Failed to fetch history");
+        }
+        if (!qualityResponse.ok) {
+          throw new Error("Failed to fetch data-quality history");
+        }
+
+        const [historyData, qualityData] = await Promise.all([
+          historyResponse.json(),
+          qualityResponse.json(),
+        ]);
+
+        if (!active) return;
+        setApproved(Array.isArray(historyData.approved) ? historyData.approved : []);
+        setDataQuality(Array.isArray(qualityData.approved) ? qualityData.approved : []);
+      } catch (err) {
+        if (active) setError(err.message);
+      } finally {
+        if (active) setLoading(false);
+      }
     }
 
-    try {
-      const res = await fetch("https://clinical-data-reconciliation-engine-eymc.onrender.com/user/approves/history", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.message || "Failed to fetch history");
-      }
+    loadHistory();
+    return () => {
+      active = false;
+    };
+  }, [token]);
 
-      const data = await res.json();
-      if (data.approved && Array.isArray(data.approved)) {
-        setApproved(data.approved);
-        setLoading(false)
-      } else {
-        setApproved([]);
-        console.warn("No approved data found in response.");
-      }
-    } catch (err) {
-      console.error("Error fetching history:", err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchDataQuality = async () => {
-    try {
-      const res = await fetch("https://clinical-data-reconciliation-engine-eymc.onrender.com/user/approves/data-quality/history", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      const data = await res.json();
-
-      if (data.approved && Array.isArray(data.approved)) {
-        setDataQuality(data.approved);
-      } else {
-        setDataQuality([]);
-      }
-    } catch (err) {
-      console.error("Error fetching data quality:", err);
-    }
-  };
-  
   return (
     <div className="backgroundPage">
       <h2>Approved History</h2>
+      {error && <p>{error}</p>}
       <ul className="historyList">
         {approved.map((user, index) => (
           <li key={index}>
@@ -84,6 +73,7 @@ export default function History() {
         ))}
       </ul>
       {approved.length === 0 && !loading && !error && <p>No approved history found.</p>}
+
       <h2>Data Quality History</h2>
       <ul className="historyList">
         {dataQuality.map((item, index) => (
@@ -100,8 +90,8 @@ export default function History() {
               </ul>
               <strong>Issues Detected:</strong>
               <ul>
-                {item.issues_detected?.map((issue, i) => (
-                  <li key={i}>
+                {item.issues_detected?.map((issue, issueIndex) => (
+                  <li key={issueIndex}>
                     <div><strong>Field:</strong> {issue.field}</div>
                     <div><strong>Issue:</strong> {issue.issue}</div>
                     <div><strong>Severity:</strong> {issue.severity}</div>
@@ -113,7 +103,6 @@ export default function History() {
           </li>
         ))}
       </ul>
-
       {dataQuality.length === 0 && !loading && !error && (
         <p>No data quality history found.</p>
       )}

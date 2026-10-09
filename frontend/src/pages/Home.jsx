@@ -1,8 +1,9 @@
 import '../css/Home.css'
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ReconcileFrom from '../components/ReconcileFrom';
 import DataQuality from '../components/DataQuality';
 import History from '../components/History';
+import { API_URL } from '../config';
 
 function AdminHome ()  {
 
@@ -17,23 +18,37 @@ function AdminHome ()  {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
-    window.location.href = "https://honeypatel08.github.io/Clinical-Data-Reconciliation-Engine_frontend/";
+    window.location.hash = "#/login";
   };
 
-  useEffect(() => { 
-    fetchUsers();
-  }, []); 
-
-  const fetchUsers = async () => {
-    const res = await fetch("https://clinical-data-reconciliation-engine-eymc.onrender.com/api/admin/users", {
+  const fetchUsers = useCallback(async () => {
+    const res = await fetch(`${API_URL}/api/admin/users`, {
       headers: { Authorization: `Bearer ${token}` } 
     });
     const data = await res.json();
-    console.log(data); 
     setPending(data.pending);
     setApproved(data.approved);
     setRejected(data.rejected);
-  };
+  }, [token]);
+
+  useEffect(() => {
+    let active = true;
+    fetch(`${API_URL}/api/admin/users`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!active) return;
+        setPending(data.pending);
+        setApproved(data.approved);
+        setRejected(data.rejected);
+      })
+      .catch((err) => console.error(err));
+
+    return () => {
+      active = false;
+    };
+  }, [token]);
 
   const toggleSelect = (userEmail) => { // looked by array store 
     if (selected.includes(userEmail)) {
@@ -47,7 +62,7 @@ function AdminHome ()  {
     if(selected.length === 0) return alert ("Select at least one"); 
 
      try {
-        const res = await fetch("https://clinical-data-reconciliation-engine-eymc.onrender.com/api/admin/update-status", {
+        const res = await fetch(`${API_URL}/api/admin/update-status`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -63,7 +78,7 @@ function AdminHome ()  {
 
         fetchUsers();
         setSelected([]); 
-      } catch (err) {
+      } catch {
         alert("Error updating user status");
       }
   }
@@ -138,7 +153,7 @@ function UserHome ()  {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
-    window.location.href = "https://honeypatel08.github.io/Clinical-Data-Reconciliation-Engine_frontend/#/login";
+    window.location.hash = "#/login";
   };
 
   return(
@@ -167,23 +182,23 @@ function Home (){
   const token = localStorage.getItem('token'); 
   const [role, setRole] = useState(null);
 
-  const getUserFromToken = async () => {
-    try {
-      const res = await fetch("https://clinical-data-reconciliation-engine-eymc.onrender.com/user-role", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      setRole(data.role);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   useEffect(() => {
-    if (token) {
-      getUserFromToken();
-    }
+    if (!token) return;
+
+    let active = true;
+    fetch(`${API_URL}/user-role`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (active) setRole(data.role);
+      })
+      .catch((err) => console.error(err));
+
+    return () => {
+      active = false;
+    };
   }, [token]);
 
   if (role === 'admin') {

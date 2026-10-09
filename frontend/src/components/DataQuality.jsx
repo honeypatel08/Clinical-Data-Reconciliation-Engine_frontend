@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import '../css/Home.css'
+import { API_URL } from '../config';
 
 function DataQuality() {
   const [loading, setLoading] = useState(false);
-  const initialForm = [
-    {  name: "",
+  const initialForm = {
+    name: "",
     dob: "",
     gender: "M",
     medications: "",
@@ -12,8 +13,8 @@ function DataQuality() {
     conditions: "",
     blood_pressure: "",
     heart_rate: "",
-    last_updated: "" }
-  ];
+    last_updated: ""
+  };
 
   const [form, setForm] = useState(initialForm);
   const [result, setResult] = useState(null);
@@ -59,7 +60,7 @@ function DataQuality() {
       const token = localStorage.getItem("token");
 
       const res = await fetch(
-        "https://clinical-data-reconciliation-engine-eymc.onrender.com/api/validate/data-quality",
+        `${API_URL}/api/validate/data-quality`,
         {
           method: "POST",
           headers: {
@@ -92,7 +93,7 @@ function DataQuality() {
   const handleApprove = async (res) => {
     try {
         const token = localStorage.getItem("token");
-        const response = await fetch("https://clinical-data-reconciliation-engine-eymc.onrender.com/user/approves/data-quality", {
+        const response = await fetch(`${API_URL}/user/approves/data-quality`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -216,10 +217,10 @@ function DataQuality() {
           
         </div>
       )}
-      <div className="approvalButtons">
+      {result && <div className="approvalButtons">
             <button onClick={() => handleApprove(result)}>Approve</button>
             <button onClick={() => handleReject()}>Reject</button>
-      </div>
+      </div>}
     </div>
   );
 }

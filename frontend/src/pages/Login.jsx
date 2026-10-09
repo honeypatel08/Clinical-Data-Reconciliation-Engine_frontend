@@ -1,6 +1,7 @@
 import '../css/Login.css'
 import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
+import { API_URL } from '../config';
 
 export default function Login (){
     const navigate = useNavigate(); 
@@ -19,7 +20,7 @@ export default function Login (){
 
         // debugging 
         try {
-            const res = await fetch("https://clinical-data-reconciliation-engine-eymc.onrender.com/api/auth/log-in", {
+            const res = await fetch(`${API_URL}/api/auth/log-in`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password })
@@ -30,8 +31,6 @@ export default function Login (){
 
             localStorage.setItem("token", data.token);
             localStorage.setItem("role", data.role);
-            console.log(localStorage.getItem("role")); 
-
             setEmail("");
             setPassword("");
             navigate('/home');
@@ -39,9 +38,6 @@ export default function Login (){
         } catch (err) {
             alert(err.message);
         }
-        console.log(email); 
-        console.log(password); 
-
     };
 
     return(

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import '../css/Home.css'
+import { API_URL } from '../config';
 
 function ReconcileFrom() {
   const [loading, setLoading] = useState(false);
@@ -87,7 +88,7 @@ function ReconcileFrom() {
       setLoading(true);
       setResult(null); 
       const token = localStorage.getItem("token");
-      const res = await fetch("https://clinical-data-reconciliation-engine-eymc.onrender.com/api/reconcile/medication", {
+      const res = await fetch(`${API_URL}/api/reconcile/medication`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -103,7 +104,7 @@ function ReconcileFrom() {
       }
       const data = await res.json();
       setResult({ ...data, fromCache: false });
-    } catch (err) {
+    } catch {
       setResult("Failed")
       alert("Error calling reconcile API");
     }finally{
@@ -120,7 +121,7 @@ function ReconcileFrom() {
   const handleApprove = async (res) => {
     try {
         const token = localStorage.getItem("token");
-        const response = await fetch("https://clinical-data-reconciliation-engine-eymc.onrender.com/user/approves/", {
+        const response = await fetch(`${API_URL}/user/approves/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

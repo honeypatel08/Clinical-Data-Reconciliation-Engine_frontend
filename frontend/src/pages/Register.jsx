@@ -1,6 +1,7 @@
 import { useState } from "react";
 import '../css/Register.css'; 
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../config';
 
 
 export default function Register() {
@@ -10,25 +11,6 @@ export default function Register() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setconfirmPassword] = useState(''); 
-    const [code, setCode] = useState('');
-    const [codeSent, setCodeSent] = useState(false);
-    const [emailVerified, setEmailVerified] = useState(false);
-
-    const handleSendCode = async () => {
-        try {
-            const res = await fetch("https://clinical-data-reconciliation-engine-eymc.onrender.com/verify/emailverify/send-code", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email })
-            });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error);
-            setCodeSent(true);
-            alert("Verification code sent, Please check your email");
-        } catch (err) {
-            alert(err.message);
-        }
-    };
 
     const handleRegister = async () =>{   
         if (!email || !password || !providername || !confirmPassword) return alert("All fields are require");
@@ -36,10 +18,10 @@ export default function Register() {
 
         // Backend connect 
         try {
-            const res = await fetch("https://clinical-data-reconciliation-engine-eymc.onrender.com/api/auth/register", {
+            const res = await fetch(`${API_URL}/api/auth/register`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ providername, email, password })
+            body: JSON.stringify({ providerName: providername, email, password })
             });
 
             const data = await res.json();
@@ -50,20 +32,15 @@ export default function Register() {
             setEmail("");
             setPassword("");
             setconfirmPassword("");
-            setCodeSent(false);
-            setEmailVerified(false);
-            setCode("");
         } catch (err) {
             alert(err.message);
             setProviderName("");
             setEmail("");
             setPassword("");
             setconfirmPassword("");
-            setCodeSent(false);
-            setEmailVerified(false);
-            setCode("");
+            return;
         }
-        navigate('./login')
+        navigate('/login')
     }
 
     return(
