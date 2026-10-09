@@ -12,16 +12,31 @@ export default function Register() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setconfirmPassword] = useState(''); 
 
-    const handleRegister = async () =>{   
-        if (!email || !password || !providername || !confirmPassword) return alert("All fields are require");
-        if(password !== confirmPassword) return alert("Passwords does not match")
+    const handleRegister = async (event) =>{
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        const submittedProviderName = String(formData.get("providerName") || "").trim();
+        const submittedEmail = String(formData.get("email") || "").trim();
+        const submittedPassword = String(formData.get("password") || "");
+        const submittedConfirmPassword = String(formData.get("confirmPassword") || "");
+
+        if (!submittedEmail || !submittedPassword || !submittedProviderName || !submittedConfirmPassword) {
+            return alert("All fields are required");
+        }
+        if (submittedPassword !== submittedConfirmPassword) {
+            return alert("Passwords do not match");
+        }
 
         // Backend connect 
         try {
             const res = await fetch(`${API_URL}/api/auth/register`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ providerName: providername, email, password })
+            body: JSON.stringify({
+                providerName: submittedProviderName,
+                email: submittedEmail,
+                password: submittedPassword
+            })
             });
 
             const data = await res.json();
@@ -34,10 +49,6 @@ export default function Register() {
             setconfirmPassword("");
         } catch (err) {
             alert(err.message);
-            setProviderName("");
-            setEmail("");
-            setPassword("");
-            setconfirmPassword("");
             return;
         }
         navigate('/login')
@@ -45,43 +56,55 @@ export default function Register() {
 
     return(
         <div className="backgroundPage">
-            <div className="register-box">
+            <form className="register-box" onSubmit={handleRegister}>
                 <h2>Healthcare Provider? Create An Account</h2>
                 <input
                     className='providername'
+                    name="providerName"
                     type="text"
                     placeholder="Provider Name"
+                    autoComplete="name"
+                    required
                     value={providername}
                     onChange={(e) => setProviderName(e.target.value)}
                 />
                  <input
                     className='emailInput'
-                    type="text"
+                    name="email"
+                    type="email"
                     placeholder="Enter Email"
+                    autoComplete="email"
+                    required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
             
                 <input
                     className='passwordInput'
+                    name="password"
                     type="password"
                     placeholder="Create Password"
+                    autoComplete="new-password"
+                    required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 <input
                     className='ConfirmPassword'
+                    name="confirmPassword"
                     type="password"
                     placeholder="Confirm Password"
+                    autoComplete="new-password"
+                    required
                     value={confirmPassword}
                     onChange={(e) => setconfirmPassword(e.target.value)}
                 />
 
-                <button onClick={handleRegister}> Register </button>
+                <button type="submit">Register</button>
 
-                <h4>Note: After registering, please allow 3–4 business days for the admin to review and approve your request. Once you receive the confirmation email, you may log in and start using our services. If you do not receive the email within this timeframe, please contact the admin at [email here]. Thank you for your time and patience!
+                <h4>After registering, wait for the admin approval email before signing in. If you need help, contact clinicalsystemadmin@gmail.com.
                 </h4>
-            </div>
+            </form>
         </div>
     )
 }

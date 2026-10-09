@@ -13,17 +13,22 @@ export default function Login (){
         return emailRegex.test(email);
     };
 
-    const handleLogin = async () => {
-        if (!email || !password) return alert("Enter both fields");
+    const handleLogin = async (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        const submittedEmail = String(formData.get("email") || "").trim();
+        const submittedPassword = String(formData.get("password") || "");
 
-        if(!isValidEmail(email)) return alert("Please enter a valid email address"); 
+        if (!submittedEmail || !submittedPassword) return alert("Enter both fields");
+
+        if(!isValidEmail(submittedEmail)) return alert("Please enter a valid email address");
 
         // debugging 
         try {
             const res = await fetch(`${API_URL}/api/auth/log-in`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({ email: submittedEmail, password: submittedPassword })
             });
 
             const data = await res.json();
@@ -42,28 +47,34 @@ export default function Login (){
 
     return(
         <div className="backgroundPage">
-            <div className="login-box">
+            <form className="login-box" onSubmit={handleLogin}>
                 <h2>Welcome to Clinical Data Reconcilliation Engine</h2>
                 <h2>Login</h2>
                 <input
                     className='emailInput'
-                    type="text"
+                    name="email"
+                    type="email"
                     placeholder="Enter Email"
+                    autoComplete="email"
+                    required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
                 <input
                     className='passwordInput'
+                    name="password"
                     type="password"
                     placeholder="Enter Password"
+                    autoComplete="current-password"
+                    required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
-                <button onClick={handleLogin}>Login</button>
+                <button type="submit">Login</button>
                 <h3>
                     Don't have an account? <a href="https://honeypatel08.github.io/Clinical-Data-Reconciliation-Engine_frontend/#/register">Register</a>
                 </h3>
-            </div>
+            </form>
         </div>
     );
 }
